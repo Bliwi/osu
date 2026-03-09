@@ -38,8 +38,8 @@ jobs:
             -c Release \
             -f net8.0-ios \
             -p:RuntimeIdentifier=ios-arm64 \
-            -p:CodesignProvision="" \
-            -p:CodesignKey=""
+            -p:EnableCodeSigning=false \
+            -p:BuildIpa=true
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
