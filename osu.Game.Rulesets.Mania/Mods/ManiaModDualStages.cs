@@ -19,17 +19,17 @@ namespace osu.Game.Rulesets.Mania.Mods
         public override ModType Type => ModType.Conversion;
         public override double ScoreMultiplier => 1;
 
-        private bool isForCurrentRuleset;
+        // private bool isForCurrentRuleset;
 
         public void ApplyToBeatmapConverter(IBeatmapConverter beatmapConverter)
         {
             var mbc = (ManiaBeatmapConverter)beatmapConverter;
 
-            isForCurrentRuleset = mbc.IsForCurrentRuleset;
+            // isForCurrentRuleset = mbc.IsForCurrentRuleset;
 
-            // Although this can work, for now let's not allow keymods for mania-specific beatmaps
-            if (isForCurrentRuleset)
-                return;
+            // // Although this can work, for now let's not allow keymods for mania-specific beatmaps
+            // if (isForCurrentRuleset)
+            //     return;
 
             mbc.Dual = true;
         }
