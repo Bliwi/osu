@@ -1,11 +1,12 @@
 on: [push, pull_request]
 name: Build IOS
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  contents: read # to fetch code (actions/checkout)
+  contents: read
 
 jobs:
   build-only-ios:
@@ -28,16 +29,17 @@ jobs:
       - name: Use Xcode 16.4
         run: sudo xcode-select -switch /Applications/Xcode_16.4.app
 
+      - name: Restore iOS project
+        run: dotnet restore osu.IOS/osu.iOS.csproj -p:TargetFramework=net8.0-ios
+
       - name: Publish iOS app
         run: |
-          dotnet publish osu.iOS.slnf \
-            -c Release \
+          dotnet publish osu.IOS/osu.iOS.csproj \
             -f net8.0-ios \
-            -p:RuntimeIdentifier=ios-arm64 \
             -p:BuildIpa=true
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: "**/*.ipa"
+          path: osu.IOS/bin/Release/net8.0-ios/ios-arm64/publish/*.ipa
