@@ -1,0 +1,43 @@
+on: [push, pull_request]
+name: Build IOS
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build-only-ios:
+    name: Build only (iOS)
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8.0.x
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install .NET Workloads
+        run: dotnet workload install ios
+
+      - name: Use Xcode 16.4
+        run: sudo xcode-select -switch /Applications/Xcode_16.4.app
+
+      - name: Publish iOS app
+        run: |
+          dotnet publish osu.iOS.slnf \
+            -c Release \
+            -f net8.0-ios \
+            -p:RuntimeIdentifier=ios-arm64 \
+            -p:BuildIpa=true
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: "**/*.ipa"
