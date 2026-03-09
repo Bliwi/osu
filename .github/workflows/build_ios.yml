@@ -34,9 +34,12 @@ jobs:
 
       - name: Publish iOS app
         run: |
-          dotnet publish osu.IOS/osu.iOS.csproj \
+          dotnet publish osu.iOS/osu.iOS.csproj \
+            -c Release \
             -f net8.0-ios \
-            -p:BuildIpa=true
+            -p:RuntimeIdentifier=ios-arm64 \
+            -p:CodesignProvision="" \
+            -p:CodesignKey=""
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
